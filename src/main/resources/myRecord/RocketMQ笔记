@@ -1,0 +1,11 @@
+RocketMQ源码包以及官方文档：http://rocketmq.apache.org/
+RocketMQ拓展包（RocketMQ工程名为rocketmq-console）：https://github.com/apache/rocketmq-externals/tree/master/
+启动RocketMQ顺序：先启动NameServer，再启动Broker
+nohup sh mqnamesrv & ===启动NameServer
+nohup sh mqbroker -c /usr/local/rocketmq/conf/2m-2s-async/broker-a.properties >/dev/null 2>&1 &
+===启动Broker（依赖指定的broker-a.properties配置文件，注意该配置文件决定了是主/从节点，所以启动时要注意自己引用的配置文件）
+sudo systemctl status firewalld ===查看防火墙状态（CentOS7）
+sudo systemctl stop firewalld ===关闭防火墙（CentOS7）
+关闭RocketMQ顺序：先关闭Broker，再关闭NameServer
+sh mqshutdown broker ===关闭Broker
+sh mqshutdown namesrv ===关闭NameServer

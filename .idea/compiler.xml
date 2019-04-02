@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="logistics" />
+        <module name="order" />
+        <module name="pay-a" />
+        <module name="pay-b" />
+        <module name="store" />
+        <module name="store-api" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="logistics" target="1.8" />
+      <module name="order" target="1.8" />
+      <module name="pay-a" target="1.8" />
+      <module name="pay-b" target="1.8" />
+      <module name="rocketmq-api" target="1.8" />
+      <module name="store" target="1.8" />
+      <module name="store-api" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
