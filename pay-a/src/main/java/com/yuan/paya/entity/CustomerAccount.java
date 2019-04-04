@@ -1,16 +1,20 @@
 package com.yuan.paya.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class CustomerAccount {
+/**
+ * 减钱操作的实体类
+ */
+public class CustomerAccount implements Serializable {
     private String accountId;
 
     private String accountNo;
 
     private Date dateTime;
 
-    private BigDecimal currentBalance;
+    private BigDecimal currentBalance;//余额
 
     private Integer version;
 

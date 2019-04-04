@@ -1,9 +1,13 @@
 package com.yuan.payb.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PlatformAccount {
+/**
+ * 加钱操作的实体类
+ */
+public class PlatformAccount implements Serializable {
     private String accountId;
 
     private String accountNo;

@@ -1,8 +1,9 @@
 package com.yuan.paya.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BrokerMessageLog {
+public class BrokerMessageLog implements Serializable{
     private String messageId;
 
     private String message;
