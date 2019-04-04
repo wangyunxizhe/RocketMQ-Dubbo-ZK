@@ -52,7 +52,7 @@
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:druid:1.1.10" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.13" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.37" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba.boot:dubbo-spring-boot-starter:0.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:dubbo:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.20.0-GA" level="project" />

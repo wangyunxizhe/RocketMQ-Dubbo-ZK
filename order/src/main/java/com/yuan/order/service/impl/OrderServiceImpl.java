@@ -54,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
                     "更新人", new Date());
             if (is_update == 1) {//有一条被更新了
                 orderMapper.insertSelective(order);
+                rs = CommonReturnType.create("下单成功！", "success");
             } else if (is_update == 0) {//没更新：1，可能是高并发时乐观锁成效了；2，可能是库存不足
                 int storeCount = storeServiceApi.selectStoreCount(supplierId, goodsId);//当前库存
                 if (storeCount == 0) {
@@ -65,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            rs = CommonReturnType.create(e.getMessage(), "fail");
+            rs = CommonReturnType.create("下单服务异常！请检查", "fail");
         }
         return rs;
     }

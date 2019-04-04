@@ -2,6 +2,7 @@ package com.yuan.order.web;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.yuan.order.response.CommonReturnType;
 import com.yuan.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,31 +22,30 @@ public class OrderController {
             commandKey = "createOrder",//自定义，一般规范是跟方法的url全路径相同
             commandProperties = {
                     @HystrixProperty(name = "execution.timeout.enabled", value = "true"),
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "30000")//设置超时时间
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")//设置超时时间
             },
             //设置超时后的降级方法（3秒钟后如果/createOrder请求仍不成功，就走降级方法 createOrderFallbackMethod4Timeout）
             fallbackMethod = "createOrderFallbackMethod4Timeout"
     )
     @RequestMapping("/createOrder")
-    public String createOrder(@RequestParam("cityId") String cityId, @RequestParam("platformId") String platformId,
+    public CommonReturnType createOrder(@RequestParam("cityId") String cityId, @RequestParam("platformId") String platformId,
                                         @RequestParam("userId") String userId, @RequestParam("supplierId") String supplierId,
                                         @RequestParam("goodsId") String goodsId) throws Exception {
         //睡5秒，人工超时，强制走降级方法 createOrderFallbackMethod4Timeout
         //Thread.sleep(5000);
-        orderService.createOrder(cityId, platformId, userId, supplierId, goodsId);
-        return "aa";
+        return orderService.createOrder(cityId, platformId, userId, supplierId, goodsId);
     }
 
     /**
      * 注意：降级后的方法一定要和源方法保持参数一致，返回值一致，抛出的异常一致
      */
-    public String createOrderFallbackMethod4Timeout(@RequestParam("cityId") String cityId,
-                                                    @RequestParam("platformId") String platformId,
-                                                    @RequestParam("userId") String userId,
-                                                    @RequestParam("supplierId") String supplierId,
-                                                    @RequestParam("goodsId") String goodsId) throws Exception {
+    public CommonReturnType createOrderFallbackMethod4Timeout(@RequestParam("cityId") String cityId,
+                                                              @RequestParam("platformId") String platformId,
+                                                              @RequestParam("userId") String userId,
+                                                              @RequestParam("supplierId") String supplierId,
+                                                              @RequestParam("goodsId") String goodsId) throws Exception {
         System.err.println("------------执行超时降级方法------------");
-        return "Hystrix Timeout!";
+        return CommonReturnType.create("Hystrix Timeout!", "fail");
     }
 
     @HystrixCommand(
