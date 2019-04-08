@@ -16,8 +16,6 @@ public class CallbackService {
 
     public static final String CALLBACK_PAY_TAGS = "callback_paya";
 
-    public static final String NAMESERVER = "172.20.10.7:9876;172.20.10.8:9876;172.20.10.9:9876;172.20.10.10:9876";
-
     @Autowired
     private SyncProducer syncProducer;
 

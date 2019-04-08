@@ -57,7 +57,7 @@ public class OrderConsumer {
                 String msgBody = new String(msg.getBody(), "utf-8");
                 String tags = msg.getTags();
                 String keys = msg.getKeys();
-                System.err.println("收到消息：" + "  topic :" + topic + "  ,tags : " + tags
+                System.err.println("Order收到消息：" + "  topic :" + topic + "  ,tags : " + tags
                         + "keys :" + keys + ", msg : " + msgBody);
                 String orignMsgId = msg.getProperties().get(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
                 System.err.println("orignMsgId: " + orignMsgId);
@@ -69,9 +69,10 @@ public class OrderConsumer {
                 Date currentTime = new Date();
                 if (status.equals(OrderStauts.ORDER_PAYED.getValue())) {
                     int count = orderMapper.updateOrderStatus(orderId, status, "wyuan", currentTime);
-//                    if (count == 1) {
+                    if (count == 1) {
+                        System.err.println("---------Order本地更新落库成功---------");
 //                        orderService.sendOrderlyMessage4Pkg(userId, orderId);
-//                    }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

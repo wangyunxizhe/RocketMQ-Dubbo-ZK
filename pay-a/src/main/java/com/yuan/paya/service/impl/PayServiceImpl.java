@@ -71,7 +71,7 @@ public class PayServiceImpl implements PayService {
                 params.put("userId", userId);
                 params.put("orderId", orderId);
                 params.put("accountId", accountId);
-                params.put("money", money);
+                params.put("money", payMoney);
                 Message msg = new Message(TX_PAYA_TOPIC, TX_PAYA_TAGS, keys,
                         FastJsonConvertUtil.convertObjectToJSON(params).getBytes(RemotingHelper.DEFAULT_CHARSET));
                 //用自己封装好的事务消息生产者发送消息
@@ -90,6 +90,7 @@ public class PayServiceImpl implements PayService {
                 countDownLatch.await();
                 if (sendResult.getSendStatus() == SendStatus.SEND_OK
                         && sendResult.getLocalTransactionState() == LocalTransactionState.COMMIT_MESSAGE) {
+                    System.err.println("~~~回调order服务~~~通知order服务，支付整体流程已完毕~~~");
                     //回调order服务，通知支付成功的消息
                     callbackService.sendOKMessage(orderId, userId);
                     return CommonReturnType.create("支付成功！");

@@ -60,24 +60,26 @@ public class PayConsumer {
                 String tags = msg.getTags();
                 String keys = msg.getKeys();
                 String body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
-                System.err.println("收到事务消息, topic: " + topic + ", tags: " + tags
+                System.err.println("PayB收到事务消息, topic: " + topic + ", tags: " + tags
                         + ", keys: " + keys + ", body: " + body);
 
-                //	消息一单过来的时候（去重 幂等操作）
-                //	数据库主键去重<去重表 keys>
-                // 	insert table --> insert ok & primary key
+                //消息一单过来的时候（去重 幂等操作）
+                //数据库主键去重<去重表 keys>
+                //insert table --> insert ok & primary key
                 Map<String, Object> paramsBody = FastJsonConvertUtil.convertJSONToObject(body, Map.class);
-                String userId = (String) paramsBody.get("userId");    // 用户id
-                String accountId = (String) paramsBody.get("accountId");    //账户id
-                String orderId = (String) paramsBody.get("orderId");    // 	统一的订单
-                BigDecimal money = (BigDecimal) paramsBody.get("money");    //	当前的收益款
+                String userId = (String) paramsBody.get("userId");//用户id
+                String accountId = (String) paramsBody.get("accountId");//账户id
+                String orderId = (String) paramsBody.get("orderId");//统一的订单
+                Integer money = (Integer) paramsBody.get("money");//当前的收益款
+                BigDecimal payMoney = new BigDecimal(money);
 
                 PlatformAccount pa = platformAccountMapper.selectByPrimaryKey("platform001");
-                pa.setCurrentBalance(pa.getCurrentBalance().add(money));
+                pa.setCurrentBalance(pa.getCurrentBalance().add(payMoney));
                 Date currentTime = new Date();
                 pa.setVersion(pa.getVersion() + 1);
                 pa.setDateTime(currentTime);
                 pa.setUpdateTime(currentTime);
+                System.err.println("---------PayB本地更新落库成功---------");
                 platformAccountMapper.updateByPrimaryKeySelective(pa);
             } catch (Exception e) {
                 e.printStackTrace();
