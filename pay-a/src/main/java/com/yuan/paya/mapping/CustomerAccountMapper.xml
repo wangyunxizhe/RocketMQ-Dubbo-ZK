@@ -114,4 +114,13 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where account_id = #{accountId,jdbcType=VARCHAR}
   </update>
+
+    <update id="updateNewMoney">
+        update t_rocketmq_customer_account
+        set current_balance = #{newMoney,jdbcType=DECIMAL},
+        version = version + 1,
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where account_id = #{accountId,jdbcType=VARCHAR}
+        and version = #{oldVersion,jdbcType=INTEGER}
+    </update>
 </mapper>

@@ -13,7 +13,7 @@ public class MybatisMapperScanerConfig {
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-        mapperScannerConfigurer.setBasePackage("com.yuan.paya.mapper");
+        mapperScannerConfigurer.setBasePackage("com.yuan.payb.mapper");
         return mapperScannerConfigurer;
     }
 

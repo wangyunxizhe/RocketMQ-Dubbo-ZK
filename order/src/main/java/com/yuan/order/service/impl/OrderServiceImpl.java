@@ -29,7 +29,8 @@ public class OrderServiceImpl implements OrderService {
     private StoreServiceApi storeServiceApi;
 
     @Override
-    public CommonReturnType createOrder(String cityId, String platformId, String userId, String supplierId, String goodsId) {
+    public CommonReturnType createOrder(String cityId, String platformId,
+                                        String userId, String supplierId, String goodsId) {
         CommonReturnType rs = new CommonReturnType();
         try {
             Order order = new Order();
