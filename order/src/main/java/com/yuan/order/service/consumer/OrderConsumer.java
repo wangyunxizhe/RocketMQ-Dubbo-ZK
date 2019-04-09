@@ -71,7 +71,8 @@ public class OrderConsumer {
                     int count = orderMapper.updateOrderStatus(orderId, status, "wyuan", currentTime);
                     if (count == 1) {
                         System.err.println("---------Order本地更新落库成功---------");
-//                        orderService.sendOrderlyMessage4Pkg(userId, orderId);
+                        orderService.sendOrderlyMessage4Pkg(userId, orderId);
+                        System.err.println("---------Order系统发送消息，通知物流系统---------");
                     }
                 }
             } catch (Exception e) {

@@ -6,18 +6,25 @@ import com.yuan.order.entity.Order;
 import com.yuan.order.mapper.OrderMapper;
 import com.yuan.order.response.CommonReturnType;
 import com.yuan.order.service.OrderService;
+import com.yuan.order.service.producer.OrderProducer;
+import com.yuan.order.utils.FastJsonConvertUtil;
 import com.yuan.store.service.api.StoreServiceApi;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    public static final String LOGISTICS_TOPIC = "logistics_topic";//订单-物流系统消息主题
+
+    public static final String LOGISTICS_TAGS = "logistics_tags";//订单-物流系统消息标签
 
     @Reference(version = "1.0.0",
             application = "${dubbo.application.id}",
@@ -27,6 +34,9 @@ public class OrderServiceImpl implements OrderService {
             retries = 0
     )
     private StoreServiceApi storeServiceApi;
+
+    @Autowired
+    private OrderProducer orderProducer;
 
     @Override
     public CommonReturnType createOrder(String cityId, String platformId,
@@ -70,6 +80,45 @@ public class OrderServiceImpl implements OrderService {
             rs = CommonReturnType.create("下单服务异常！请检查", "fail");
         }
         return rs;
+    }
+
+    @Override
+    public void sendOrderlyMessage4Pkg(String userId, String orderId) {
+        try {
+            List<Message> msgList = new ArrayList<>();
+
+            Map<String, Object> param1 = new HashMap<>();
+            param1.put("userId", userId);
+            param1.put("orderId", orderId);
+            param1.put("step", "第一步（模拟操作）：创建包裹");
+
+            String key1 = "Order$" + System.currentTimeMillis();
+
+            Message msg1 = new Message(LOGISTICS_TOPIC, LOGISTICS_TAGS, key1,
+                    FastJsonConvertUtil.convertObjectToJSON(param1).getBytes(RemotingHelper.DEFAULT_CHARSET));
+            msgList.add(msg1);
+
+            Map<String, Object> param2 = new HashMap<>();
+            param2.put("userId", userId);
+            param2.put("orderId", orderId);
+            param2.put("step", "第二步（模拟操作）：发送物流通知");
+
+            String key2 = "Order$" + System.currentTimeMillis();
+
+            Message msg2 = new Message(LOGISTICS_TOPIC, LOGISTICS_TAGS, key2,
+                    FastJsonConvertUtil.convertObjectToJSON(param2).getBytes(RemotingHelper.DEFAULT_CHARSET));
+            msgList.add(msg2);
+
+            //顺序消息投递 正常工作中的做法：供应商ID与topic messageQueueID 进行绑定对应的
+            //在这里将表中查出的supplier_id作为messageQueueID，以便实现顺序消息的简单测试
+            Order order = orderMapper.selectByPrimaryKey(orderId);
+            int msgQueueNumber = Integer.parseInt(order.getSupplierId());
+
+            //将组装好的消息数组msgList，使用自定义的顺序消息生产者发出
+            orderProducer.sendOrderlyMessages(msgList,msgQueueNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

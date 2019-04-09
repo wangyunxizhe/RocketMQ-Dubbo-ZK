@@ -5,4 +5,6 @@ import com.yuan.order.response.CommonReturnType;
 public interface OrderService {
 
     CommonReturnType createOrder(String cityId, String platformId, String userId, String supplierId, String goodsId);
+
+    void sendOrderlyMessage4Pkg(String userId, String orderId);
 }
