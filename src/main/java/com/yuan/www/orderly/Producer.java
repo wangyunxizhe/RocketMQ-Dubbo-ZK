@@ -35,7 +35,7 @@ public class Producer {
             String body = dateStr + " Orderly MQ " + i;
             Message msg = new Message("test_order_topic", "TagA", "Key" + i,
                     body.getBytes(RemotingHelper.DEFAULT_CHARSET));
-            //发送消息：如果要实现顺序消费，则必须实现自己的，保证消息进入到同一个队列中
+            //发送消息：如果要实现顺序消费，则必须实现自己的MessageQueueSelector，保证消息进入到同一个队列中
             SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
                 @Override
                 public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
@@ -51,7 +51,7 @@ public class Producer {
             String body = dateStr + " Orderly MQ " + i;
             Message msg = new Message("test_order_topic", "TagA", "Key" + i,
                     body.getBytes(RemotingHelper.DEFAULT_CHARSET));
-            //发送消息：如果要实现顺序消费，则必须实现自己的，保证消息进入到同一个队列中
+            //发送消息：如果要实现顺序消费，则必须实现自己的MessageQueueSelector，保证消息进入到同一个队列中
             SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
                 @Override
                 public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
@@ -67,7 +67,7 @@ public class Producer {
             String body = dateStr + " Orderly MQ " + i;
             Message msg = new Message("test_order_topic", "TagA", "Key" + i,
                     body.getBytes(RemotingHelper.DEFAULT_CHARSET));
-            //发送消息：如果要实现顺序消费，则必须实现自己的，保证消息进入到同一个队列中
+            //发送消息：如果要实现顺序消费，则必须实现自己的MessageQueueSelector，保证消息进入到同一个队列中
             SendResult sendResult = producer.send(msg, new MessageQueueSelector() {
                 @Override
                 public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
