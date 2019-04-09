@@ -30,6 +30,7 @@ public class CallbackService {
                 FastJsonConvertUtil.convertObjectToJSON(params).getBytes());
 
         SendResult ret = syncProducer.sendMessage(message);
+        System.err.println("PayA发出普通消息：" + ret);
     }
 
 

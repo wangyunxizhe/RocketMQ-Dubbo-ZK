@@ -87,6 +87,7 @@ public class PayServiceImpl implements PayService {
                 //发出消息并且执行本地事务。
                 //第三步：保证代码健壮性，作为第一，二步的兜底，使用数据库的乐观锁方式来做最终的数据去重
                 TransactionSendResult sendResult = transactionProducer.sendMsg(msg, params);
+                System.err.println("PayA发出事务消息：" + sendResult);
                 countDownLatch.await();
                 if (sendResult.getSendStatus() == SendStatus.SEND_OK
                         && sendResult.getLocalTransactionState() == LocalTransactionState.COMMIT_MESSAGE) {

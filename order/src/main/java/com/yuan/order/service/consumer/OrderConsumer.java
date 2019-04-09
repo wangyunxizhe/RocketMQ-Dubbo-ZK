@@ -58,7 +58,7 @@ public class OrderConsumer {
                 String tags = msg.getTags();
                 String keys = msg.getKeys();
                 System.err.println("Order收到消息：" + "  topic :" + topic + "  ,tags : " + tags
-                        + "keys :" + keys + ", msg : " + msgBody);
+                        + "  ,keys :" + keys + "  ,msg : " + msgBody);
                 String orignMsgId = msg.getProperties().get(MessageConst.PROPERTY_ORIGIN_MESSAGE_ID);
                 System.err.println("orignMsgId: " + orignMsgId);
                 //获取payA中CallbackService发送的消息体内容
