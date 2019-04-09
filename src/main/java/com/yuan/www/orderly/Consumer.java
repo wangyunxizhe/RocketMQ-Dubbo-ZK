@@ -7,6 +7,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
+
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -50,5 +51,9 @@ public class Consumer {
             }
             return ConsumeOrderlyStatus.SUCCESS;
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Consumer consumer = new Consumer();
     }
 }
