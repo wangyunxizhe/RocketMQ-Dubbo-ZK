@@ -63,16 +63,17 @@ public class PayConsumer {
                 System.err.println("PayB收到事务消息, topic: " + topic + ", tags: " + tags
                         + ", keys: " + keys + ", body: " + body);
 
-                //消息一单过来的时候（去重 幂等操作）
-                //数据库主键去重<去重表 keys>
-                //insert table --> insert ok & primary key
+                //消息端一定要做去重操作（去重 幂等操作）！！！数据量不是很大的时候可以用如下操作
+                //去重的具体实施步骤：数据库主键去重<建去重表 只有一列keys>
+                //insert table --> insert ok（说明成功，没有重复的keys）
+                //或者primary key（违反主键约束，插入失败），说明该keys的消息已经消费过
                 Map<String, Object> paramsBody = FastJsonConvertUtil.convertJSONToObject(body, Map.class);
                 String userId = (String) paramsBody.get("userId");//用户id
                 String accountId = (String) paramsBody.get("accountId");//账户id
                 String orderId = (String) paramsBody.get("orderId");//统一的订单
                 Integer money = (Integer) paramsBody.get("money");//当前的收益款
                 BigDecimal payMoney = new BigDecimal(money);
-
+                //"platform001"模拟当前交易平台的一个收款账号
                 PlatformAccount pa = platformAccountMapper.selectByPrimaryKey("platform001");
                 pa.setCurrentBalance(pa.getCurrentBalance().add(payMoney));
                 Date currentTime = new Date();
@@ -83,7 +84,7 @@ public class PayConsumer {
                 platformAccountMapper.updateByPrimaryKeySelective(pa);
             } catch (Exception e) {
                 e.printStackTrace();
-                //msg.getReconsumeTimes();
+                //msg.getReconsumeTimes(); 获取重试次数
                 //如果处理多次操作还是失败, 记录失败日志（做补偿 回顾 人工处理）
                 return ConsumeConcurrentlyStatus.RECONSUME_LATER;
             }
