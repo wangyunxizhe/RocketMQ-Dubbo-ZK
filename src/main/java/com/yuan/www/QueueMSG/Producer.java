@@ -42,7 +42,7 @@ public class Producer {
                     Integer queueNumber = (Integer) arg;
                     return mqs.get(queueNumber);
                 }
-            }, 2);
+            }, 2);//指定发送到第2个队列中
             System.err.println("发送结果：" + rs);
         }
         //6，关闭消息

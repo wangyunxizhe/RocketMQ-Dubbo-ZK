@@ -14,11 +14,13 @@ import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 负责消费payA模块发来的消息，达到监听支付状态更改的目的
+ */
 @Component
 public class OrderConsumer {
 
@@ -47,6 +49,9 @@ public class OrderConsumer {
         consumer.start();
     }
 
+    /**
+     * 注意：顺序消息生产者要实现的接口
+     */
     class MessageListenerConcurrently4Pay implements MessageListenerConcurrently {
 
         @Override
@@ -67,9 +72,9 @@ public class OrderConsumer {
                 String userId = (String) body.get("userId");//用户id
                 String status = (String) body.get("status");//订单状态
                 Date currentTime = new Date();
-                if (status.equals(OrderStauts.ORDER_PAYED.getValue())) {
+                if (status.equals(OrderStauts.ORDER_PAYED.getValue())) {//收到消息中的订单状态=2（支付完成）
                     int count = orderMapper.updateOrderStatus(orderId, status, "wyuan", currentTime);
-                    if (count == 1) {
+                    if (count == 1) {//订单状态更改成功后，发消息通知物流系统，准备发货事宜
                         System.err.println("---------Order本地更新落库成功---------");
                         orderService.sendOrderlyMessage4Pkg(userId, orderId);
                         System.err.println("---------Order系统发送消息，通知物流系统---------");
@@ -77,6 +82,7 @@ public class OrderConsumer {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                //遇到异常可以稍后重试
                 return ConsumeConcurrentlyStatus.RECONSUME_LATER;
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

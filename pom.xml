@@ -8,12 +8,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>order</module>
-        <module>store</module>
-        <module>store-api</module>
-        <module>pay-a</module>
-        <module>pay-b</module>
-        <module>logistics</module>
+        <module>order</module><!-- 订单模块 -->
+        <module>store</module><!-- 库存模块 -->
+        <module>store-api</module><!-- 库存模块dubbo服务的api -->
+        <module>pay-a</module><!-- 用户账户模块 -->
+        <module>pay-b</module><!-- 平台账户模块 -->
+        <module>logistics</module><!-- 物流模块 -->
     </modules>
 
     <packaging>pom</packaging>

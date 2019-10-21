@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
+/**
+ * @Configuration 该类在springboot中相当于MVC中的xml配置文件
+ */
 @Configuration
 @EnableTransactionManagement
 public class DruidDataSourceConfig {
@@ -36,7 +39,6 @@ public class DruidDataSourceConfig {
 
     @Bean
     public ServletRegistrationBean druidServlet() {
-
         ServletRegistrationBean reg = new ServletRegistrationBean();
         reg.setServlet(new StatViewServlet());
         reg.addUrlMappings("/druid/*");
@@ -57,6 +59,9 @@ public class DruidDataSourceConfig {
         return filterRegistrationBean;
     }
 
+    /**
+     * druid数据源的数据库相关配置
+     */
     @Bean
     public DataSource dataSource() throws SQLException {
         DruidDataSource ds = new DruidDataSource();
@@ -83,6 +88,9 @@ public class DruidDataSourceConfig {
         return ds;
     }
 
+    /**
+     * 数据库事务配置，如在项目中有方法需要使用，在方法上加上@Transactional注解即可
+     */
     @Bean
     public PlatformTransactionManager transactionManager() throws Exception {
         DataSourceTransactionManager txManager = new DataSourceTransactionManager();

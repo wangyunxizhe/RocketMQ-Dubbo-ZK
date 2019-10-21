@@ -17,8 +17,9 @@ public class TransactionProducer {
 
     public static void main(String[] args) throws MQClientException,
             UnsupportedEncodingException, InterruptedException {
-        //1，生产者启动前的准备
+        //1，生产者启动前的准备，要使用事务消息的话，需要实例化TransactionMQProducer对象
         TransactionMQProducer producer = new TransactionMQProducer("tx_producer_group");
+        //2，创建自定义线程池，作为检查消息是否成功落地的回调线程
         ExecutorService executorService = new ThreadPoolExecutor(2, 5,
                 100, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>(2000),

@@ -3,17 +3,17 @@ package com.yuan.logistics.entity;
 import java.util.Date;
 
 public class Logistics {
-    private String packageId;
+    private String packageId;//包裹ID
 
-    private String orderId;
+    private String orderId;//订单ID
 
-    private String supplierId;
+    private String supplierId;//供应商ID
 
-    private String addressId;
+    private String addressId;//地址
 
-    private String remark;
+    private String remark;//描述
 
-    private String packageStatus;
+    private String packageStatus;//包裹状态
 
     private Date createTime;
 

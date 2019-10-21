@@ -51,9 +51,10 @@ public class OrderController {
     @HystrixCommand(
             commandKey = "createOrderTest1",//自定义，一般规范是跟方法的url全路径相同
             commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.strategy", value = "THREAD")//设置线程池方法（限流）
+                    //设置线程池方法（目的：限流）
+                    @HystrixProperty(name = "execution.isolation.strategy", value = "THREAD")
             },
-            threadPoolKey = "createOrderTest1ThreadPool",
+            threadPoolKey = "createOrderTest1ThreadPool",//自定义线程池名字
             threadPoolProperties = {
                     @HystrixProperty(name = "coreSize", value = "10"),//设置核心线程数：初始化时允许链接10个线程
                     @HystrixProperty(name = "maxQueueSize", value = "20000"),
@@ -78,12 +79,12 @@ public class OrderController {
         return "Hystrix ThreadPool!";
     }
 
-    //信号量限流降级：同一时间最多允许N条请求过来，超过就走降级方法
+    //信号量限流降级：同一时间最多允许N条请求过来，也有是限制请求最大的并发数量。超过就走降级方法
     @HystrixCommand(
             commandKey = "createOrderTest2",//自定义，一般规范是跟方法的url全路径相同
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"),//设置限流策略：信号量
-                    //同一时间允许3个请求
+                    //同一时间允许3个请求，并发最大为3
                     @HystrixProperty(name = "execution.isolation.semaphore.maxConcurrentRequests", value = "3")
             },
             fallbackMethod = "createOrderFallbackMethod4Semaphore"

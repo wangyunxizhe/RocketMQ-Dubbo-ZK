@@ -64,12 +64,12 @@ public class PayConsumer {
                         + ", keys: " + keys + ", body: " + body);
 
                 //消息端一定要做去重操作（去重 幂等操作）！！！数据量不是很大的时候可以用如下操作
-                //去重的具体实施步骤：数据库主键去重<建去重表 只有一列keys>
-                //insert table --> insert ok（说明成功，没有重复的keys）
+                //去重的具体实施步骤：数据库主键去重<建去重表 只有一列，只保存keys>
+                //insert table --> insert ok（说明成功，没有重复的keys，是第一次接收到这个消息）
                 //或者primary key（违反主键约束，插入失败），说明该keys的消息已经消费过
                 Map<String, Object> paramsBody = FastJsonConvertUtil.convertJSONToObject(body, Map.class);
                 String userId = (String) paramsBody.get("userId");//用户id
-                String accountId = (String) paramsBody.get("accountId");//账户id
+                String accountId = (String) paramsBody.get("accountId");//用户账户id
                 String orderId = (String) paramsBody.get("orderId");//统一的订单
                 Integer money = (Integer) paramsBody.get("money");//当前的收益款
                 BigDecimal payMoney = new BigDecimal(money);
@@ -85,7 +85,7 @@ public class PayConsumer {
             } catch (Exception e) {
                 e.printStackTrace();
                 //msg.getReconsumeTimes(); 获取重试次数
-                //如果处理多次操作还是失败, 记录失败日志（做补偿 回顾 人工处理）
+                //如果处理多次操作还是失败, 记录失败日志（做补偿 回滚 人工处理）
                 return ConsumeConcurrentlyStatus.RECONSUME_LATER;
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

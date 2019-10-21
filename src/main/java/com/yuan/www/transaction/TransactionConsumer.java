@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * 事务消息--消费者
+ * 事务消息的消费者与其他普通的消费者没什么区别，正常写即可
  */
 public class TransactionConsumer {
 

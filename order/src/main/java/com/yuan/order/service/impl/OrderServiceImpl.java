@@ -33,11 +33,14 @@ public class OrderServiceImpl implements OrderService {
             timeout = 3000,
             retries = 0
     )
-    private StoreServiceApi storeServiceApi;
+    private StoreServiceApi storeServiceApi;//引用库存模块的dubbo服务
 
     @Autowired
     private OrderProducer orderProducer;
 
+    /**
+     * 创建订单
+     */
     @Override
     public CommonReturnType createOrder(String cityId, String platformId,
                                         String userId, String supplierId, String goodsId) {
@@ -57,24 +60,23 @@ public class OrderServiceImpl implements OrderService {
             order.setCreateTime(new Date());
             order.setUpdateBy("更新人");
             order.setUpdateTime(new Date());
-
-            //1，查询现有库存--返回当前数据版本号
+            //1，调用库存模块的dubbo服务：查询现有库存--返回当前数据版本号
             int nowVersion = storeServiceApi.selectVersion(supplierId, goodsId);
-            //2，根据返回版本号更新库存
+            //2，调用库存模块的dubbo服务：根据返回版本号更新库存
             int is_update = storeServiceApi.updateStoreCountByVersion(nowVersion, supplierId, goodsId,
                     "更新人", new Date());
             if (is_update == 1) {//有一条被更新了
                 orderMapper.insertSelective(order);
                 rs = CommonReturnType.create("下单成功！", "success");
             } else if (is_update == 0) {//没更新：1，可能是高并发时乐观锁成效了；2，可能是库存不足
-                int storeCount = storeServiceApi.selectStoreCount(supplierId, goodsId);//当前库存
+                //调用库存模块的dubbo服务：查看当前库存分析未更新的原因
+                int storeCount = storeServiceApi.selectStoreCount(supplierId, goodsId);
                 if (storeCount == 0) {
                     rs = CommonReturnType.create("当前库存不足。。。", "fail");
                 } else {
-                    rs = CommonReturnType.create("乐观锁生效。。。", "fail");
+                    rs = CommonReturnType.create("并发导致乐观锁生效。。。", "fail");
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             rs = CommonReturnType.create("下单服务异常！请检查", "fail");
@@ -82,11 +84,15 @@ public class OrderServiceImpl implements OrderService {
         return rs;
     }
 
+    /**
+     * 订单模块向物流模块发送顺序消息
+     * 以业务中需要顺序处理的场景为例
+     */
     @Override
     public void sendOrderlyMessage4Pkg(String userId, String orderId) {
         try {
             List<Message> msgList = new ArrayList<>();
-
+            //业务中的第一步
             Map<String, Object> param1 = new HashMap<>();
             param1.put("userId", userId);
             param1.put("orderId", orderId);
@@ -97,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
             Message msg1 = new Message(LOGISTICS_TOPIC, LOGISTICS_TAGS, key1,
                     FastJsonConvertUtil.convertObjectToJSON(param1).getBytes(RemotingHelper.DEFAULT_CHARSET));
             msgList.add(msg1);
-
+            //业务中的第二步
             Map<String, Object> param2 = new HashMap<>();
             param2.put("userId", userId);
             param2.put("orderId", orderId);
@@ -115,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
             int msgQueueNumber = Integer.parseInt(order.getSupplierId());
 
             //将组装好的消息数组msgList，使用自定义的顺序消息生产者发出
-            orderProducer.sendOrderlyMessages(msgList,msgQueueNumber);
+            orderProducer.sendOrderlyMessages(msgList, msgQueueNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }

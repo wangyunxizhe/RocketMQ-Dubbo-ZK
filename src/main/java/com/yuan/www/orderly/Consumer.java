@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 顺序消息--消费者
+ * 1，顺序消息需要生产消费端互相配合
+ * 2，消费者需要单线程去处理接收到的消息
  */
 public class Consumer {
 
@@ -32,6 +34,9 @@ public class Consumer {
         System.out.println("Consumer Start...");
     }
 
+    /**
+     * 该Listener类的作用就是保证单线程的监听消息队列
+     */
     class Listener implements MessageListenerOrderly {
 
         private Random random = new Random();

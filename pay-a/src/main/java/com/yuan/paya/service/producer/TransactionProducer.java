@@ -13,8 +13,10 @@ import java.util.concurrent.*;
 @Component
 public class TransactionProducer implements InitializingBean {
 
+    //事务消息生产者
     private TransactionMQProducer producer;
 
+    //执行回调函数所需的线程池
     private ExecutorService executorService;
 
     @Autowired

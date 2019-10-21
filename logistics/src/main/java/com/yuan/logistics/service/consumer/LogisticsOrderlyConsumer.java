@@ -41,6 +41,9 @@ public class LogisticsOrderlyConsumer {
         this.consumer.start();
     }
 
+    /**
+     * 注意：顺序消息消费者要实现的接口
+     */
     class LogisticsOrderlyListener implements MessageListenerOrderly {
 
         @Override
@@ -61,8 +64,11 @@ public class LogisticsOrderlyConsumer {
                     String userId = (String) body.get("userId");//用户id
                     String step = (String) body.get("step");//模拟的操作步骤
                     System.err.println("业务操作步骤: " + step);
+                    //该工程重点在于MQ，所以此处省略了对物流表Logistics的业务操作。
+                    // 正常工作中，可根据收到的消息内容做出业务上的响应
                 } catch (Exception e) {
                     e.printStackTrace();
+                    //如有异常，稍后重试
                     return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
                 }
             }

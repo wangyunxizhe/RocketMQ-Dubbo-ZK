@@ -17,6 +17,8 @@ import java.util.List;
 
 /**
  * 顺序消息--生产者
+ * 1，顺序消息需要生产消费端互相配合
+ * 2，首先，生产端要做到把消息发到相同的topic，相同的队列中
  */
 public class Producer {
 
